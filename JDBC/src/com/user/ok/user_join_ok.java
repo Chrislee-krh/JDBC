@@ -1,6 +1,10 @@
 package com.user.ok;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,10 +35,40 @@ public class user_join_ok extends HttpServlet {
 	      String phone2 = request.getParameter("phone2");
 	      String gender = request.getParameter("gender");
 	      //검증
-	      System.out.println(id + " ," + pw + " ," + name+ " ," + phone1+ " ," + phone2+ " ," + gender);
+	      System.out.println(id + ", " + pw + ", " + name+ ", " + phone1+ ", " + phone2+ ", " + gender);
 	      //DB와 연동에 필요한 변수를 선언
 	      String url="jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Seoul";
 	      String driver = "com.mysql.cj.jdbc.Driver";
+	      String user = "mytest";
+	      String password = "mytest";
+	      
+	      Connection conn = null;
+	      Statement stmt = null;
+	      
+	      //DB에 전달할 SQL작성
+	      String sql = "insert into testuser values('"+id+"', '"+ pw +"', '"+name+"', +'"+phone1+"', '"+ phone2+"', '"+gender+"')";
+	      try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(url,user,password);
+			stmt = conn.createStatement();
+			int result = stmt.executeUpdate(sql);
+			
+			if(result ==1) {
+				response.sendRedirect("join_success.jsp");
+			} else {
+				response.sendRedirect("join_fail.jsp");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(conn != null) conn.close();
+				if(stmt != null) stmt.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		} 
+	      
 	}
 
 }
