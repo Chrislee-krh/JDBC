@@ -37,38 +37,46 @@ public class user_join_ok extends HttpServlet {
 	      //검증
 	      System.out.println(id + ", " + pw + ", " + name+ ", " + phone1+ ", " + phone2+ ", " + gender);
 	      //DB와 연동에 필요한 변수를 선언
-	      String url="jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Seoul";
-	      String driver = "com.mysql.cj.jdbc.Driver";
-	      String user = "mytest";
-	      String password = "mytest";
-	      
-	      Connection conn = null;
-	      Statement stmt = null;
-	      
-	      //DB에 전달할 SQL작성
-	      String sql = "insert into testuser values('"+id+"', '"+ pw +"', '"+name+"', +'"+phone1+"', '"+ phone2+"', '"+gender+"')";
-	      try {
-			Class.forName(driver);
-			conn = DriverManager.getConnection(url,user,password);
-			stmt = conn.createStatement();
-			int result = stmt.executeUpdate(sql);
-			
-			if(result ==1) {
-				response.sendRedirect("join_success.jsp");
-			} else {
-				response.sendRedirect("join_fail.jsp");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if(conn != null) conn.close();
-				if(stmt != null) stmt.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		} 
-	      
+//	      String url="jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Seoul";
+//	      String driver = "com.mysql.cj.jdbc.Driver";
+//	      String user = "mytest";
+//	      String password = "mytest";
+//	      
+//	      Connection conn = null;
+//	      Statement stmt = null;
+//	      
+//	      //DB에 전달할 SQL작성
+//	      String sql = "insert into testuser values('"+id+"', '"+ pw +"', '"+name+"', +'"+phone1+"', '"+ phone2+"', '"+gender+"')";
+//	      try {
+//			Class.forName(driver);
+//			conn = DriverManager.getConnection(url,user,password);
+//			stmt = conn.createStatement();
+//			int result = stmt.executeUpdate(sql);
+//			
+//			if(result ==1) {
+//				response.sendRedirect("join_success.jsp");
+//			} else {
+//				response.sendRedirect("join_fail.jsp");
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			try {
+//				if(conn != null) conn.close();
+//				if(stmt != null) stmt.close();
+//			} catch (Exception e2) {
+//				e2.printStackTrace();
+//			}
+//		} 
+	      //DAO 객체 생성
+	      MemberDAO dao = MemberDAO.getInstance();
+	      //MemberVO 객체 생성
+	      MemberVO vo = new MemberVO(id, pw, name, phone1, phone2, gender);
+	      int result = dao.join(vo);
+	      if(result ==1) {
+	    	  response.sendRedirect("join.success.jsp");
+	      }else {
+	    	  response.sendRedirect("join.fail.jsp");
+	      }
 	}
-
 }
